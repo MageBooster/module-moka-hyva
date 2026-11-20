@@ -1,0 +1,13 @@
+<?php
+/**
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \MageBooster\MokaHyva\ViewModel\Panel $vm
+ */
+$vm = $block->getData('view_model');
+if (!$vm->isAvailable() || !$vm->isInline()) {
+    return; // redirect mode: MageBooster Checkout sends the customer on by itself (order_place_redirect_url)
+}
+?>
+<script type="application/json" id="mb-moka-data"><?= /* @noEscape */ $vm->scriptJson() ?></script>
+<script src="<?= $escaper->escapeUrl($block->getViewFileUrl('MageBooster_MokaHyva::js/moka.js')) ?>"></script>

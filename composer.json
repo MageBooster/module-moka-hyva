@@ -1,0 +1,23 @@
+{
+    "name": "magebooster/module-moka-hyva",
+    "description": "Moka United payment panel for MageBooster Checkout on Hyvä (and Luma) themes: method notes, TRY amount and the inline card form.",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.0",
+        "ext-json": "*",
+        "magento/framework": "^103.0",
+        "magebooster/module-moka": "^1.0"
+    },
+    "suggest": {
+        "magebooster/module-checkout": "The MageBooster Alpine checkout this package adds the panel to"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "MageBooster\\MokaHyva\\": ""
+        }
+    }
+}

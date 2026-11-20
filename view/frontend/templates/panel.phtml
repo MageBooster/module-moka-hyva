@@ -1,0 +1,50 @@
+<?php
+/**
+ * Panel under the Moka United method in MageBooster Checkout. Rendered inside its x-data root, so Alpine sees the
+ * checkout scope (pay, totals).
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \MageBooster\MokaHyva\ViewModel\Panel $vm
+ */
+$vm = $block->getData('view_model');
+if (!$vm->isAvailable()) {
+    return;
+}
+$code = $vm::CODE;
+$rate = $vm->tryRate();
+?>
+<div class="mb-co-pp" x-show="pay === '<?= $escaper->escapeJs($code) ?>'" x-cloak>
+    <?php if ($vm->description() !== ''): ?>
+    <p><?= $escaper->escapeHtml($vm->description()) ?></p>
+    <?php endif; ?>
+    <?php if ($vm->isTestMode()): ?>
+    <p class="mb-co-pp-warn"><?= $escaper->escapeHtml(__('Test mode: no real payment is taken.')) ?></p>
+    <?php endif; ?>
+    <?php if ($rate !== null): ?>
+    <p x-show="totals">
+        <?= $escaper->escapeHtml(__('You will be charged in Turkish lira:')) ?>
+        <strong x-text="totals ? (parseFloat(totals.base_grand_total) * <?= /* @noEscape */ json_encode($rate) ?>).toFixed(2) + ' TRY' : ''"></strong>
+        <small>(1 <?= $escaper->escapeHtml($vm->baseCurrency()) ?> = <?= $escaper->escapeHtml(number_format($rate, 4, '.', '')) ?> TRY)</small>
+    </p>
+    <?php endif; ?>
+    <?php if ($vm->isInline()): ?>
+    <div class="mb-co-pp-card">
+        <label class="mb-co-in"><?= $escaper->escapeHtml(__('Name on card')) ?>
+            <input id="mb-moka-cc-name" type="text" autocomplete="cc-name"></label>
+        <label class="mb-co-in"><?= $escaper->escapeHtml(__('Card number')) ?>
+            <input id="mb-moka-cc-number" type="text" inputmode="numeric" autocomplete="cc-number" maxlength="23"></label>
+        <div class="mb-co-pp-row">
+            <label class="mb-co-in"><?= $escaper->escapeHtml(__('Month (MM)')) ?>
+                <input id="mb-moka-cc-month" type="text" inputmode="numeric" autocomplete="cc-exp-month" maxlength="2"></label>
+            <label class="mb-co-in"><?= $escaper->escapeHtml(__('Year (YY)')) ?>
+                <input id="mb-moka-cc-year" type="text" inputmode="numeric" autocomplete="cc-exp-year" maxlength="4"></label>
+            <label class="mb-co-in"><?= $escaper->escapeHtml(__('CVC')) ?>
+                <input id="mb-moka-cc-cvc" type="password" inputmode="numeric" autocomplete="cc-csc" maxlength="4"></label>
+        </div>
+        <small><?= $escaper->escapeHtml(__('Your card details are sent securely to Moka United for 3D Secure and are not stored by this store.')) ?></small>
+    </div>
+    <?php else: ?>
+    <small><?= $escaper->escapeHtml(__('After "Place order" you enter your card on a secure card page and confirm it with 3D Secure.')) ?></small>
+    <?php endif; ?>
+</div>
